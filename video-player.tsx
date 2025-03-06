@@ -1,19 +1,22 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { Home, Clock, Dice5 } from "lucide-react"
+import { Home, Clock, Dice5, Play } from "lucide-react"
 
 export default function AutoPlayVideo() {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [isAutoplayFailed, setIsAutoplayFailed] = useState(false)
 
   useEffect(() => {
     if (videoRef.current) {
       const playVideo = async () => {
         try {
           await videoRef.current!.play()
+          setIsAutoplayFailed(false) // Autoplay worked
         } catch (error) {
           console.error("Auto-play failed:", error)
+          setIsAutoplayFailed(true) // Autoplay failed, show play button
         }
       }
 
@@ -29,13 +32,23 @@ export default function AutoPlayVideo() {
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         autoPlay
-        muted
         loop
         playsInline
+        controls // Ensure video controls are visible
       >
         <source src="/aivid.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
+
+      {/* Play Button (if autoplay fails) */}
+      {isAutoplayFailed && (
+        <button
+          onClick={() => videoRef.current?.play()}
+          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold rounded-lg p-4"
+        >
+          <Play className="mr-2 h-6 w-6" /> Click to Play Video
+        </button>
+      )}
 
       {/* Navbar */}
       <nav className="absolute top-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
@@ -73,7 +86,7 @@ export default function AutoPlayVideo() {
         </div>
 
         {/* Mobile Menu */}
-        <div id="mobile-menu" className="hidden md:hidden flex flex-col mt-4 space-y-4 text-center">
+        <div id="mobile-menu" className="hidden md:hidden flex-col mt-4 space-y-4 text-center">
           <Link href="/" className="block text-lg">Home</Link>
           <Link href="/future" className="block text-lg">Future</Link>
           <Link href="/dicemilar" className="block text-lg">Dicemilar</Link>
