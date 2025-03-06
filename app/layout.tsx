@@ -4,7 +4,7 @@ import "./globals.css"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Video Player App",
+  title: "Future-Vision",
   description: "A Next.js application with auto-playing videos",
    
 }
